@@ -47,8 +47,13 @@ const App = () => {
         env: "mainnet",
       });
 
+      // Check if the pool exists
+      const poolId = `${sellToken}_${buyToken}`;
+      const poolInfo = await deepBookClient.getPoolInfo(poolId);
+      if (!poolInfo) throw new Error(`Pool ${poolId} does not exist.`);
+
       const tx = await deepBookClient.placeMarketOrder({
-        poolId: `${sellToken}_${buyToken}`, // Adjust pool ID
+        poolId,
         quantity: BigInt(sellAmount),
         orderType: "ask",
         recipientAddress: currentAccount.address,
@@ -93,8 +98,12 @@ const App = () => {
 
       const marketPrice = await deepBookClient.getMarketPrice(
         `${sellToken}_${buyToken}`
-      ); // Adjust pool ID
-      setExpectedReceiveAmount(Number(marketPrice.bestBidPrice) * sellAmount);
+      );
+      if (marketPrice && marketPrice.bestBidPrice) {
+        setExpectedReceiveAmount(Number(marketPrice.bestBidPrice) * sellAmount);
+      } else {
+        setExpectedReceiveAmount(0);
+      }
     } catch (error) {
       console.error("Error calculating receive amount:", error);
       setExpectedReceiveAmount(0);
