@@ -9,7 +9,6 @@ import {
   useWallets,
 } from "@mysten/dapp-kit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Transaction } from "@mysten/sui/transactions";
 import { DeepBookClient } from "@mysten/deepbook-v3";
 import "./App.css";
 
@@ -24,7 +23,6 @@ const App = () => {
   const suiClient = useSuiClient();
   const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
   const [loading, setLoading] = useState(false);
-  const [tokens, setTokens] = useState<string[]>([]);
   const [sellToken, setSellToken] = useState<string>("SUI");
   const [buyToken, setBuyToken] = useState<string>("DBUSDC");
   const [sellAmount, setSellAmount] = useState<number>(0);
@@ -49,16 +47,12 @@ const App = () => {
         env: "mainnet",
       });
 
-      const tx = new Transaction();
-      const swapFn = deepBookClient.swapExactBaseForQuote({
-        poolKey: `${sellToken}_${buyToken}`,
-        amount: sellAmount,
-        deepAmount: sellAmount * 0.95, // Example slippage
-        minOut: sellAmount * 0.9, // Example minimum output
+      const tx = await deepBookClient.placeMarketOrder({
+        poolId: `${sellToken}_${buyToken}`, // Adjust pool ID
+        quantity: BigInt(sellAmount),
+        orderType: "ask",
+        recipientAddress: currentAccount.address,
       });
-
-      const [, quoteOut, deepOut] = swapFn(tx);
-      tx.transferObjects([quoteOut, deepOut], currentAccount.address);
 
       await signAndExecuteTransaction(
         { transaction: tx },
@@ -97,39 +91,15 @@ const App = () => {
         env: "mainnet",
       });
 
-      const { quoteOut } = await deepBookClient.getQuantityOut(
-        `${sellToken}_${buyToken}`,
-        sellAmount,
-        0
-      );
-
-      setExpectedReceiveAmount(quoteOut);
+      const marketPrice = await deepBookClient.getMarketPrice(
+        `${sellToken}_${buyToken}`
+      ); // Adjust pool ID
+      setExpectedReceiveAmount(Number(marketPrice.bestBidPrice) * sellAmount);
     } catch (error) {
       console.error("Error calculating receive amount:", error);
       setExpectedReceiveAmount(0);
     }
   };
-
-  const fetchTokenList = async () => {
-    try {
-      const deepBookClient = new DeepBookClient({
-        client: suiClient,
-        address: currentAccount?.address || "",
-        env: "mainnet",
-      });
-      const tokenList = await deepBookClient.getTokenList();
-      setTokens(tokenList);
-    } catch (error) {
-      console.error("Error fetching token list:", error);
-      alert("Failed to fetch token list. Check console for more details.");
-    }
-  };
-
-  useEffect(() => {
-    if (currentAccount) {
-      fetchTokenList();
-    }
-  }, [currentAccount]);
 
   useEffect(() => {
     calculateExpectedReceiveAmount();
@@ -145,12 +115,8 @@ const App = () => {
             value={sellToken}
             onChange={(e) => setSellToken(e.target.value)}
           >
-            <option>SUI</option>
-            {tokens.map((token, index) => (
-              <option key={index} value={token}>
-                {token}
-              </option>
-            ))}
+            <option value="SUI">SUI</option>
+            <option value="DBUSDC">DBUSDC</option>
           </select>
           <input
             type="number"
@@ -164,12 +130,8 @@ const App = () => {
             value={buyToken}
             onChange={(e) => setBuyToken(e.target.value)}
           >
-            <option>DBUSDC</option>
-            {tokens.map((token, index) => (
-              <option key={index} value={token}>
-                {token}
-              </option>
-            ))}
+            <option value="DBUSDC">DBUSDC</option>
+            <option value="SUI">SUI</option>
           </select>
           <input
             type="number"
