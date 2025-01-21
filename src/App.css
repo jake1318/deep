@@ -1,0 +1,220 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Orbitron", sans-serif;
+  background: linear-gradient(135deg, #000000, #101010);
+  color: #00a3ff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #000000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  width: 100%; /* Full width */
+  position: fixed; /* Fixed to the top */
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar .logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00a3ff;
+  text-shadow: 0 0 10px #00a3ff;
+  text-decoration: none;
+}
+
+.navbar .logo img {
+  width: 40px;
+  margin-right: 10px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+
+.nav-links a,
+.nav-links .inactive-link {
+  color: #00a3ff;
+  font-weight: bold;
+  padding: 8px 12px;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: #00ffff;
+  text-shadow: 0 0 10px #00ffff;
+}
+
+.wallet-button {
+  background-color: #00a3ff;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wallet-button:hover {
+  background-color: #00ffff;
+  box-shadow: 0 4px 10px rgba(0, 255, 255, 0.8);
+}
+
+/* Main Content */
+.app-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: calc(
+    100vh - 120px
+  ); /* Account for navbar (60px) + footer (60px) */
+  margin-top: 60px; /* Space for navbar */
+  margin-bottom: 60px; /* Space for footer */
+}
+
+.swap-container {
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  background: rgba(30, 30, 30, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 230, 255, 0.5);
+  text-align: center;
+}
+
+.swap-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px #00a3ff;
+}
+
+.swap-container input,
+.swap-container select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #00a3ff;
+  background: linear-gradient(135deg, #1a1a1a, #2b2b2b);
+  color: #e0e0e0;
+  font-size: 1rem;
+  box-shadow: 0 0 10px rgba(0, 230, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.swap-container input:focus,
+.swap-container select:focus {
+  outline: none;
+  box-shadow: 0 0 15px rgba(0, 230, 255, 0.6);
+}
+
+.swap-container button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background: #00a3ff;
+  color: #1a1a1a;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 230, 255, 0.6);
+}
+
+.swap-container button:hover {
+  background: #00ffff;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+}
+
+.swap-container button:disabled {
+  background: #555555;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  background-color: #000000;
+  padding: 20px;
+  color: #00e6ff;
+  text-shadow: 0 0 10px #00e6ff;
+  box-shadow: 0 0 10px rgba(0, 163, 255, 0.3);
+  width: 100%; /* Full width */
+  position: fixed; /* Fixed to the bottom */
+  bottom: 0;
+  z-index: 1000;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .swap-container {
+    padding: 20px;
+  }
+
+  .swap-container h1 {
+    font-size: 2rem;
+  }
+}
+.swap-button {
+  background-color: #00a3ff; /* Same blue as the other buttons */
+  color: #ffffff; /* White text for contrast */
+  font-size: 1rem; /* Adjust font size */
+  font-weight: bold;
+  padding: 10px 20px; /* Padding for the button */
+  border: none;
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+  cursor: pointer;
+  transition: all 0.3s ease; /* Smooth hover effect */
+}
+
+.swap-button:hover {
+  background-color: #00ffff; /* Slightly brighter blue on hover */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Enhance shadow on hover */
+  transform: translateY(-2px); /* Slight "lift" effect on hover */
+}
+
+.swap-button:disabled {
+  background-color: #555555; /* Gray color when disabled */
+  color: #999999; /* Lighter gray text */
+  cursor: not-allowed;
+  box-shadow: none; /* No shadow for disabled button */
+}
